@@ -1613,7 +1613,7 @@ async function loadState(){
  * в шапке worker.js (5 минут через дашборд Cloudflare, без консоли) и подставь сюда
  * адрес своего воркера:
  */
-const AI_ENDPOINT = "https://api.anthropic.com/v1/messages"; // <-- замени на https://<твой-worker>.workers.dev после деплоя worker.js
+const AI_ENDPOINT = "https://el-beauty-ai.zhcg2b4hg4.workers.dev";
 
 async function callClaude(userMessage, imageDataUrl){
   const sp = state.skinProfile || {};
