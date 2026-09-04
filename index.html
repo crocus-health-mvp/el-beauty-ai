@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>El Beauty — прототип</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum:#2E1327;
+    --plum-soft:#43213A;
+    --plum-2:#532A47;
+    --gold:#C9A66B;
+    --gold-soft:#E7D4AE;
+    --rose:#C98A9E;
+    --rose-soft:#F3DEE4;
+    --ivory:#FAF7F5;
+    --card:#FFFFFF;
+    --ink:#2A1620;
+    --mute:#8A7680;
+    --line:#EEE1E5;
+    --sage:#9BB29E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;min-height:100%;}
+  body{
+    background:#E7DCE1;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+  }
+  .stage{
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    background:var(--ivory);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  @media (min-width:481px){
+    .app{
+      box-shadow:0 0 0 1px rgba(46,19,39,0.08), 0 30px 70px -25px rgba(46,19,39,0.35);
+    }
+  }
+  .content{
+    flex:1 1 auto;
+    overflow-y:visible;
+    padding:18px 20px 100px;
+    scrollbar-width:none;
+  }
+  .content::-webkit-scrollbar{display:none;}
+  .navbar{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:480px;
+    z-index:100;
+  }
+
+  /* ---- shared elements ---- */
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.03em;
+    color:var(--rose);
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  h1.hero{
+    font-family:'Fraunces',serif;
+    font-size:26px;
+    font-weight:500;
+    line-height:1.2;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .sub{
+    font-size:13.5px;
+    color:var(--mute);
+    line-height:1.45;
+    margin:0 0 18px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+  }
+
+  /* ---- HOME ---- */
+  .greeting-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:10px;
+    margin-bottom:18px;
+  }
+  .avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--rose));
+    flex:0 0 38px;
+  }
+  .bell{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--card);
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .scan-cta{
+    background:linear-gradient(160deg,var(--plum) 0%, var(--plum-2) 100%);
+    border-radius:22px;
+    padding:22px 20px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  .scan-cta::after{
+    content:"";
+    position:absolute; right:-30px; top:-30px;
+    width:120px;height:120px;border-radius:50%;
+    background:rgba(201,166,107,0.18);
+  }
+  .scan-cta .eyebrow{color:var(--gold);}
+  .scan-cta h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:19px;
+    margin:0 0 6px;
+    line-height:1.25;
+  }
+  .scan-cta p{
+    font-size:12.5px;
+    color:#E4D3DA;
+    margin:0 0 14px;
+    line-height:1.4;
+    max-width:220px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--gold);
+    color:var(--plum);
+    border:none;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    transition: transform .15s ease;
+  }
+  .btn.ghost{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.35);
+    color:#fff;
+  }
+  .btn.dark{
+    background:var(--plum);
+    color:#fff;
+  }
+  .section-title{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin:20px 0 10px;
+  }
+  .section-title h3{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:15.5px;
+    margin:0;
+  }
+  .section-title span{
+    font-size:11.5px;color:var(--rose); font-weight:600;
+  }
+  .skin-score{
+    display:flex;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .score-ring{
+    width:56px;height:56px;border-radius:50%;
+    background:conic-gradient(var(--gold) 0deg 252deg, var(--line) 252deg 360deg);
+    display:flex;align-items:center;justify-content:center;
+    flex:0 0 56px;
+  }
+  .score-ring inner{}
+  .score-ring .in{
+    width:44px;height:44px;border-radius:50%;background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;color:var(--ink);
+  }
+  .score-meta p{margin:0;}
+  .score-meta .big{font-weight:700;font-size:14px;}
+  .score-meta .small{font-size:11.5px;color:var(--mute);margin-top:2px;}
+
+  .row-card{
+    display:flex;align-items:center;gap:12px;
+    padding:12px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:var(--card);
+    margin-bottom:10px;
+  }
+  .row-card .ic{
+    width:38px;height:38px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:17px;
+    flex:0 0 38px;
+  }
+  .row-card .tx{flex:1;}
+  .row-card .tx .t1{font-size:13px;font-weight:600;}
+  .row-card .tx .t2{font-size:11.5px;color:var(--mute);margin-top:2px;}
+  .row-card .chev{color:var(--mute);font-size:14px;}
+
+  .pill-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:6px;}
+  .pill{
+    flex:0 0 auto;
+    background:var(--rose-soft);
+    color:#7D3E52;
+    font-size:11.5px;font-weight:600;
+    padding:7px 12px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+
+  /* ---- BOTTOM NAV ---- */
+  .navbar{
+    height:78px;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-around;
+    padding-top:10px;
+    border-top:1px solid var(--line);
+    background:rgba(250,247,245,0.94);
+    backdrop-filter:blur(6px);
+  }
+  .navitem{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-size:10px;color:var(--mute);
+    background:none;border:none;font-family:'Inter',sans-serif;
+    cursor:pointer;
+    width:60px;
+  }
+  .navitem .dot{
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+  }
+  .navitem.active{color:var(--plum);font-weight:700;}
+  .navitem.active .dot{color:var(--plum);}
+
+  /* ---- CHAT / DIAGNOSIS SCREEN ---- */
+  .chat-header{
+    display:flex;align-items:center;gap:10px;
+    padding:8px 0 14px;
+  }
+  .chat-header .av{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,var(--plum),var(--rose));
+  }
+  .chat-header .who .t1{font-size:13.5px;font-weight:700;}
+  .chat-header .who .t2{font-size:11px;color:var(--sage);font-weight:600;}
+
+  .bubble{
+    max-width:82%;
+    padding:11px 14px;
+    border-radius:16px;
+    font-size:13px;
+    line-height:1.45;
+    margin-bottom:10px;
+  }
+  .bubble.ai{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-top-left-radius:4px;
+    color:var(--ink);
+  }
+  .bubble.me{
+    background:var(--plum);
+    color:#fff;
+    margin-left:auto;
+    border-top-right-radius:4px;
+  }
+  .photo-chip{
+    width:100%;
+    border-radius:14px;
+    background:linear-gradient(135deg,#EFDCE1,#F6EDE6);
+    height:120px;
+    display:flex;align-items:center;justify-content:center;
+    color:#A5798A;
+    font-size:12px;
+    font-weight:600;
+    margin-bottom:10px;
+    border:1px dashed #D9B9C4;
+  }
+  .typing{
+    display:inline-flex;gap:4px;align-items:center;
+  }
+  .typing span{
+    width:5px;height:5px;border-radius:50%;background:var(--mute);
+    animation:blink 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+
+  .input-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:10px 0 0;
+  }
+  .input-bar .box{
+    flex:1;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:10px 14px;
+    font-size:12.5px;
+    color:var(--mute);
+  }
+  .input-bar .send{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--plum);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+    border:none;cursor:pointer;
+  }
+  .input-bar input.box{ color:var(--ink); font-size:13.5px; width:100%; }
+  .input-bar input.box::placeholder{ color:var(--mute); }
+
+  /* ---- PLAN SCREEN ---- */
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .metric{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:12px;
+  }
+  .metric .label{font-size:10.5px;color:var(--mute);font-weight:600;margin-bottom:6px;}
+  .metric .val{font-family:'Fraunces',serif;font-size:20px;font-weight:500;}
+  .metric .bar{height:5px;border-radius:3px;background:var(--line);margin-top:8px;overflow:hidden;}
+  .metric .bar i{display:block;height:100%;background:var(--gold);}
+
+  .plan-item{
+    display:flex;gap:12px;
+    padding:13px;
+    border-radius:16px;
+    background:var(--card);
+    border:1px solid var(--line);
+    margin-bottom:10px;
+  }
+  .plan-item .ph{
+    width:44px;height:44px;border-radius:12px;flex:0 0 44px;
+    display:flex;align-items:center;justify-content:center;font-size:19px;
+  }
+  .plan-item .tx .t1{font-size:13px;font-weight:700;margin-bottom:2px;}
+  .plan-item .tx .t2{font-size:11.5px;color:var(--mute);line-height:1.4;}
+  .tag-time{
+    font-size:10px;font-weight:700;color:var(--sage);
+    background:#EAF1EB;padding:3px 8px;border-radius:8px;
+    display:inline-block;margin-top:6px;
+  }
+
+  /* ---- MARKETPLACE ---- */
+  .pro-card{
+    display:flex;gap:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:12px;margin-bottom:10px;
+  }
+  .pro-card .ph{
+    width:52px;height:52px;border-radius:12px;flex:0 0 52px;
+    background:linear-gradient(135deg,var(--rose-soft),var(--gold-soft));
+  }
+  .pro-card .tx{flex:1;}
+  .pro-card .t1{font-size:13px;font-weight:700;}
+  .pro-card .t2{font-size:11px;color:var(--mute);margin:2px 0 6px;}
+  .rating{font-size:11px;color:var(--gold);font-weight:700;}
+  .price-tag{font-size:12px;font-weight:700;color:var(--ink);}
+
+  .prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .prod-card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:10px;
+  }
+  .prod-card .ph{
+    height:76px;border-radius:10px;margin-bottom:8px;
+    background:linear-gradient(135deg,#F3E3E8,#F6EEE0);
+  }
+  .prod-card .t1{font-size:12px;font-weight:700;}
+  .prod-card .t2{font-size:10.5px;color:var(--mute);margin:2px 0 6px;}
+  .prod-card .price{font-size:12px;font-weight:700;}
+
+  /* ---- CIRCLE (Kenzza-style) ---- */
+  .circle-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;margin-bottom:4px;}
+  .circle-card{
+    flex:0 0 128px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    overflow:hidden;
+  }
+  .circle-card .th{
+    height:96px;
+    background:linear-gradient(150deg,var(--rose-soft),var(--gold-soft));
+    position:relative;
+  }
+  .circle-card .play{
+    position:absolute; bottom:8px; left:8px;
+    background:rgba(46,19,39,0.75); color:#fff;
+    font-size:9px; font-weight:700;
+    padding:3px 7px; border-radius:8px;
+  }
+  .circle-card .match{
+    position:absolute; top:8px; right:8px;
+    background:var(--gold); color:var(--plum);
+    font-size:9px; font-weight:800;
+    padding:3px 6px; border-radius:8px;
+  }
+  .circle-card .body{padding:9px 10px 11px;}
+  .circle-card .n{font-size:11.5px;font-weight:700;}
+  .circle-card .m{font-size:10px;color:var(--mute);margin-top:2px;}
+
+  /* ---- FACE SCAN / AESTHETIC MATCH ---- */
+  .face-wrap{
+    position:relative;
+    height:220px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    margin-bottom:14px;
+  }
+  .face-shape{
+    width:132px;height:172px;
+    border-radius:48% 48% 42% 42% / 55% 55% 45% 45%;
+    background:linear-gradient(165deg,#F1D6BB,#E6BE9B);
+    position:relative;
+    box-shadow:inset 0 -10px 24px rgba(150,90,60,0.18);
+  }
+  .scan-line{
+    position:absolute; left:6%; right:6%; height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    top:38%;
+    opacity:.9;
+  }
+  .zone-dot{
+    position:absolute; width:9px;height:9px;border-radius:50%;
+    background:var(--gold); border:2px solid #fff;
+    box-shadow:0 0 0 4px rgba(201,166,107,0.22);
+  }
+  .zone-tag{
+    position:absolute;
+    font-size:9px;font-weight:700;color:var(--plum);
+    background:#fff;padding:2px 7px;border-radius:7px;
+    border:1px solid var(--line);white-space:nowrap;
+  }
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+  .match-card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;
+  }
+  .match-card .label{font-size:10px;color:var(--mute);font-weight:600;margin-bottom:6px;}
+  .match-card .val{font-family:'Fraunces',serif;font-size:16px;font-weight:500;}
+  .swatch-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .swatch{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);}
+
+  /* ---- PROFILE ---- */
+  .profile-head{
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:14px 0 6px;
+  }
+  .profile-head .av{
+    width:74px;height:74px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--rose));
+    margin-bottom:10px;
+    border:3px solid #fff;
+    box-shadow:0 4px 14px rgba(46,19,39,0.15);
+  }
+  .profile-head .name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;}
+  .profile-head .sub2{font-size:11.5px;color:var(--mute);margin-top:2px;}
+  .stat-strip{
+    display:flex;justify-content:space-between;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 10px;margin:16px 0;
+  }
+  .stat-strip .stat{text-align:center;flex:1;}
+  .stat-strip .stat .n{font-family:'Fraunces',serif;font-weight:500;font-size:17px;}
+  .stat-strip .stat .l{font-size:10px;color:var(--mute);margin-top:2px;}
+  .stat-strip .divider{width:1px;background:var(--line);}
+  .menu-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 4px;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .menu-item .l{display:flex;align-items:center;gap:10px;}
+
+  .screen-wrap{display:none;flex-direction:column;min-height:100vh;}
+  .screen-wrap.active{display:flex;}
+
+  .hint{
+    margin-top:22px;
+    font-size:11.5px;
+    color:var(--mute);
+    max-width:375px;
+    text-align:center;
+    line-height:1.5;
+  }
+
+  /* ---- motion & icons ---- */
+  [data-icon] svg{ width:18px; height:18px; stroke-width:2; display:block; }
+  i[data-icon]{ display:inline-flex; font-style:normal; vertical-align:middle; }
+  .ic [data-icon] svg, .ph [data-icon] svg{ width:19px; height:19px; color:var(--plum); }
+  .bell [data-icon] svg{ width:16px; height:16px; color:var(--plum); }
+  .navitem [data-icon] svg{ width:20px; height:20px; margin:0 auto; }
+  .send [data-icon] svg{ width:16px; height:16px; color:#fff; }
+  .menu-item [data-icon] svg{ width:17px; height:17px; color:var(--mute); }
+  .btn [data-icon] svg{ width:16px; height:16px; }
+
+  @keyframes pageIn {
+    from { opacity:0; transform:translateY(14px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .screen-wrap.entering { animation: pageIn .42s cubic-bezier(.16,.84,.44,1); }
+
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(10px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .screen-wrap.entering .content > * {
+    animation: cardIn .5s cubic-bezier(.16,.84,.44,1) both;
+  }
+  .screen-wrap.entering .content > *:nth-child(1){animation-delay:.02s;}
+  .screen-wrap.entering .content > *:nth-child(2){animation-delay:.07s;}
+  .screen-wrap.entering .content > *:nth-child(3){animation-delay:.12s;}
+  .screen-wrap.entering .content > *:nth-child(4){animation-delay:.17s;}
+  .screen-wrap.entering .content > *:nth-child(5){animation-delay:.22s;}
+  .screen-wrap.entering .content > *:nth-child(6){animation-delay:.27s;}
+  .screen-wrap.entering .content > *:nth-child(7){animation-delay:.32s;}
+  .screen-wrap.entering .content > *:nth-child(8){animation-delay:.37s;}
+  .screen-wrap.entering .content > *:nth-child(n+9){animation-delay:.4s;}
+
+  @keyframes glowPulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(201,166,107,.38); }
+    50% { box-shadow:0 0 0 9px rgba(201,166,107,0); }
+  }
+  .btn.pulse { animation: glowPulse 2.4s ease-in-out infinite; }
+
+  .btn.dark, .btn.pulse{ position:relative; overflow:hidden; }
+  .btn.dark::after, .btn.pulse::after{
+    content:""; position:absolute; top:0; left:-160%; width:55%; height:100%;
+    background:linear-gradient(115deg, transparent, rgba(255,255,255,.30), transparent);
+    animation: shine 3.2s ease-in-out infinite;
+  }
+  @keyframes shine { 0%{left:-160%;} 55%{left:150%;} 100%{left:150%;} }
+
+  .score-ring{ animation: ringIn 1s cubic-bezier(.16,.84,.44,1) both; }
+  @keyframes ringIn { from{ transform:scale(.6); opacity:0; } to{ transform:scale(1); opacity:1; } }
+
+  .avatar, .profile-head .av{ position:relative; overflow:hidden; }
+  .avatar::after, .profile-head .av::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35) 45%, transparent 60%);
+    animation: shine 4.5s ease-in-out infinite;
+  }
+
+  .navitem{ transition: color .25s ease; }
+  .navitem .dot{ transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+  .navitem.active .dot{ transform: translateY(-2px); }
+
+  .row-card, .plan-item, .pro-card, .prod-card, .circle-card, .match-card{
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .row-card:active, .plan-item:active, .pro-card:active, .prod-card:active, .circle-card:active{
+    transform: scale(.97);
+  }
+  .btn:active{ transform: scale(.96); }
+
+  /* ================= NEW: onboarding ================= */
+  .onboard{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:26px 22px 24px;
+    box-sizing:border-box;
+  }
+  .onboard-dots{ display:flex; gap:6px; margin-bottom:28px; }
+  .onboard-dots i{
+    flex:1; height:3px; border-radius:2px; background:var(--line);
+    overflow:hidden; position:relative;
+  }
+  .onboard-dots i.done, .onboard-dots i.on{ background:var(--plum); }
+  .onboard-body{ flex:1; }
+  .onboard-eyebrow{ font-size:12px; color:var(--rose); font-weight:700; margin-bottom:8px; }
+  .onboard h1{
+    font-family:'Fraunces',serif; font-weight:500; font-size:26px;
+    margin:0 0 10px; line-height:1.25;
+  }
+  .onboard p.sub2{ font-size:13px; color:var(--mute); margin:0 0 26px; }
+  .field{
+    width:100%; border:1.5px solid var(--line); background:var(--card);
+    border-radius:14px; padding:14px 16px; font-size:16px; font-family:'Inter',sans-serif;
+    color:var(--ink); outline:none; transition:border-color .2s ease;
+  }
+  .field:focus{ border-color:var(--plum); }
+  .pill-select{ display:flex; flex-direction:column; gap:12px; }
+  .pill-opt{
+    width:100%; padding:19px 20px; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--card); font-size:16px; font-weight:600; color:var(--ink);
+    cursor:pointer; transition:all .18s ease; display:flex; align-items:center; justify-content:space-between;
+  }
+  .pill-opt::after{
+    content:""; width:20px; height:20px; border-radius:50%;
+    border:1.5px solid var(--line); flex-shrink:0; transition:all .18s ease;
+  }
+  .pill-opt.sel{ background:var(--plum); border-color:var(--plum); color:#fff; }
+  .pill-opt.sel::after{ border-color:#fff; background:var(--gold); }
+  .onboard-nav{ display:flex; gap:10px; margin-top:auto; padding-top:18px; }
+  .onboard-nav .btn{ flex:1; justify-content:center; padding:16px 18px; font-size:15px; border-radius:14px; }
+  .onboard-skip{
+    text-align:center; font-size:12px; color:var(--mute); margin-top:12px; cursor:pointer;
+  }
+
+  /* ================= NEW: sub-screen header ================= */
+  .sub-head{
+    display:flex; align-items:center; gap:12px;
+    padding:2px 0 18px;
+  }
+  .back-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--card); border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; flex:0 0 34px;
+  }
+  .back-btn svg{ width:17px;height:17px; }
+  .sub-head h1{
+    font-family:'Fraunces',serif; font-weight:500; font-size:19px; margin:0;
+  }
+
+  /* ================= NEW: switches ================= */
+  .switch-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 2px; border-bottom:1px solid var(--line);
+  }
+  .switch-row .t1{ font-size:13.5px; font-weight:600; }
+  .switch-row .t2{ font-size:11px; color:var(--mute); margin-top:2px; }
+  .switch{
+    width:44px; height:26px; border-radius:14px; background:var(--line);
+    position:relative; cursor:pointer; flex:0 0 44px; transition:background .2s ease;
+  }
+  .switch i{
+    position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%;
+    background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .2s ease;
+  }
+  .switch.on{ background:var(--plum); }
+  .switch.on i{ transform:translateX(18px); }
+
+  /* ================= NEW: booking ================= */
+  .day-strip{ display:flex; gap:8px; overflow-x:auto; margin-bottom:14px; }
+  .day-chip{
+    flex:0 0 56px; padding:10px 0; border-radius:14px; text-align:center;
+    border:1.5px solid var(--line); background:var(--card); cursor:pointer;
+  }
+  .day-chip .d1{ font-size:10px; color:var(--mute); font-weight:600; }
+  .day-chip .d2{ font-size:15px; font-weight:700; margin-top:2px; }
+  .day-chip.sel{ background:var(--plum); border-color:var(--plum); }
+  .day-chip.sel .d1, .day-chip.sel .d2{ color:#fff; }
+  .slot-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-bottom:18px; }
+  .slot{
+    padding:11px 0; text-align:center; border-radius:12px;
+    border:1.5px solid var(--line); background:var(--card);
+    font-size:13px; font-weight:600; cursor:pointer;
+  }
+  .slot.sel{ background:var(--plum); border-color:var(--plum); color:#fff; }
+  .book-confirm{
+    display:none; text-align:center; padding:26px 10px;
+  }
+  .book-confirm.show{ display:block; }
+  .book-confirm .chk{
+    width:56px;height:56px;border-radius:50%;background:var(--sage);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+  }
+  .book-confirm .chk svg{ width:28px;height:28px;color:#fff; }
+
+  /* ================= NEW: feedback / stars ================= */
+  .stars{ display:flex; gap:8px; margin:14px 0 20px; }
+  .stars svg{ width:34px;height:34px; cursor:pointer; color:var(--line); transition:color .15s ease; }
+  .stars svg.on{ color:var(--gold); fill:var(--gold); }
+  textarea.field{ resize:none; font-family:'Inter',sans-serif; min-height:110px; line-height:1.4; }
+
+  /* ================= NEW: support / accordion ================= */
+  .faq-item{ border-bottom:1px solid var(--line); padding:14px 0; cursor:pointer; }
+  .faq-q{ display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:600; }
+  .faq-a{ font-size:12.5px; color:var(--mute); margin-top:10px; line-height:1.4; display:none; }
+  .faq-item.open .faq-a{ display:block; }
+  .faq-item.open .faq-chev{ transform:rotate(90deg); }
+  .faq-chev{ transition:transform .2s ease; }
+
+  /* ================= NEW: chat functional ================= */
+  #chatMessages{ display:flex; flex-direction:column; }
+  .typing-bubble{ display:inline-flex; }
+  .empty-state{ text-align:center; padding:40px 20px; color:var(--mute); font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="app">
+      <input type="file" id="photoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(event)" />
+      <!-- ============ ONBOARDING ============ -->
+      <div class="screen-wrap active" id="screen-onboarding">
+        <div class="onboard">
+          <div class="onboard-dots">
+            <i class="ob-dot on" data-step="1"></i>
+            <i class="ob-dot" data-step="2"></i>
+            <i class="ob-dot" data-step="3"></i>
+            <i class="ob-dot" data-step="4"></i>
+            <i class="ob-dot" data-step="5"></i>
+            <i class="ob-dot" data-step="6"></i>
+            <i class="ob-dot" data-step="7"></i>
+            <i class="ob-dot" data-step="8"></i>
+            <i class="ob-dot" data-step="9"></i>
+            <i class="ob-dot" data-step="10"></i>
+          </div>
+
+          <div class="onboard-body">
+            <div class="ob-step" data-step="1">
+              <div class="onboard-eyebrow">ШАГ 1 ИЗ 10</div>
+              <h1>Как к тебе<br>обращаться?</h1>
+              <p class="sub2">Так El Beauty AI будет к тебе обращаться в приложении</p>
+              <input class="field" id="obName" type="text" placeholder="Твоё имя" maxlength="30" />
+            </div>
+
+            <div class="ob-step" data-step="2" style="display:none;">
+              <div class="onboard-eyebrow">ШАГ 2 ИЗ 10</div>
+              <h1>Укажи пол</h1>
+              <p class="sub2">Это влияет на рекомендации по уходу и добавкам</p>
+              <div class="pill-select" data-store="gender">
+                <div class="pill-opt" data-val="Женский">Женский</div>
+                <div class="pill-opt" data-val="Мужской">Мужской</div>
+                <div class="pill-opt" data-val="Не указывать">Не указывать</div>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="3" style="display:none;">
+              <div class="onboard-eyebrow">ШАГ 3 ИЗ 10</div>
+              <h1>Сколько тебе лет?</h1>
+              <p class="sub2">Поможет точнее подобрать план ухода</p>
+              <input class="field" id="obAge" type="number" inputmode="numeric" placeholder="Возраст" min="12" max="99" />
+            </div>
+
+            <div class="ob-step" data-step="4" style="display:none;">
+              <div class="onboard-eyebrow">ШАГ 4 ИЗ 10</div>
+              <h1>Город проживания</h1>
+              <p class="sub2">Подберём специалистов и клиники рядом с тобой</p>
+              <input class="field" id="obCity" type="text" placeholder="Например, Москва" maxlength="40" />
+            </div>
+
+            <div class="ob-step" data-step="5" style="display:none;">
+              <div class="onboard-eyebrow">ОПРОС О КОЖЕ</div>
+              <h1>Пройдём короткий опрос?</h1>
+              <p class="sub2">4 вопроса, около минуты — как на приёме у косметолога. Поможет AI давать по-настоящему точные рекомендации по уходу: тип кожи, проблемы, чувствительность. Можно пройти и позже — в профиле.</p>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+                <button class="btn dark" style="width:100%;justify-content:center;padding:19px;font-size:15px;border-radius:14px;" onclick="obGoto(6)">Пройти опрос →</button>
+                <button class="btn ghost" style="width:100%;justify-content:center;padding:19px;font-size:15px;border-radius:14px;color:var(--plum);border-color:var(--line);" onclick="obFinish(false)">Пропустить, пройду позже</button>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="6" style="display:none;">
+              <div class="onboard-eyebrow">AI-ДЕРМАТОЛОГ · ВОПРОС 1 ИЗ 4</div>
+              <h1>Какой у тебя тип кожи?</h1>
+              <p class="sub2">Отвечай честно — это не экзамен</p>
+              <div class="pill-select" data-store="skinType">
+                <div class="pill-opt" data-val="Сухая">Сухая</div>
+                <div class="pill-opt" data-val="Жирная">Жирная</div>
+                <div class="pill-opt" data-val="Комбинированная">Комбинированная</div>
+                <div class="pill-opt" data-val="Нормальная">Нормальная</div>
+                <div class="pill-opt" data-val="Не знаю">Не знаю</div>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="7" style="display:none;">
+              <div class="onboard-eyebrow">AI-ДЕРМАТОЛОГ · ВОПРОС 2 ИЗ 4</div>
+              <h1>Что беспокоит больше всего?</h1>
+              <p class="sub2">Можно выбрать несколько вариантов</p>
+              <div class="pill-select" data-store="concerns" data-multi="true">
+                <div class="pill-opt" data-val="Акне">Акне и высыпания</div>
+                <div class="pill-opt" data-val="Сухость">Сухость и шелушение</div>
+                <div class="pill-opt" data-val="Жирный блеск">Жирный блеск</div>
+                <div class="pill-opt" data-val="Морщины">Морщины и упругость</div>
+                <div class="pill-opt" data-val="Пигментация">Пигментация</div>
+                <div class="pill-opt" data-val="Чувствительность">Чувствительность</div>
+                <div class="pill-opt" data-val="Расширенные поры">Расширенные поры</div>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="8" style="display:none;">
+              <div class="onboard-eyebrow">AI-ДЕРМАТОЛОГ · ВОПРОС 3 ИЗ 4</div>
+              <h1>Как кожа реагирует<br>на новые средства?</h1>
+              <p class="sub2">Это влияет на то, как AI будет подбирать активные компоненты</p>
+              <div class="pill-select" data-store="reaction">
+                <div class="pill-opt" data-val="Спокойно, без реакций">Спокойно, без реакций</div>
+                <div class="pill-opt" data-val="Иногда раздражается">Иногда раздражается</div>
+                <div class="pill-opt" data-val="Часто реагирует остро">Часто реагирует остро</div>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="9" style="display:none;">
+              <div class="onboard-eyebrow">AI-ДЕРМАТОЛОГ · ВОПРОС 4 ИЗ 4</div>
+              <h1>Какой у тебя сейчас уход?</h1>
+              <p class="sub2">Почти готово</p>
+              <div class="pill-select" data-store="routine">
+                <div class="pill-opt" data-val="Почти никакого">Почти никакого</div>
+                <div class="pill-opt" data-val="Базовый (очищение + крем)">Базовый (очищение + крем)</div>
+                <div class="pill-opt" data-val="Продвинутый (сыворотки, кислоты)">Продвинутый (сыворотки, кислоты)</div>
+              </div>
+            </div>
+
+            <div class="ob-step" data-step="10" style="display:none;">
+              <div class="onboard-eyebrow">AI-ДЕРМАТОЛОГ · ПОСЛЕДНЕЕ</div>
+              <h1>Хочешь добавить что-то ещё?</h1>
+              <p class="sub2">Необязательно — но если есть детали, которые важно учесть (аллергии, беременность, конкретная цель), напиши здесь своими словами</p>
+              <textarea class="field" id="obNotes" placeholder="Например: аллергия на ретинол, готовлюсь к свадьбе в июне…" style="min-height:110px;resize:none;font-family:'Inter',sans-serif;"></textarea>
+            </div>
+          </div>
+
+          <div class="onboard-nav" id="obDefaultNav">
+            <button class="btn ghost" id="obBack" style="display:none;color:var(--plum);border-color:var(--line);" onclick="obPrev()">Назад</button>
+            <button class="btn dark" id="obNext" style="width:100%;justify-content:center;" onclick="obNext()">Далее</button>
+          </div>
+          <div class="onboard-skip" id="obSkipLink" onclick="obFinish(true)">Пропустить всё</div>
+        </div>
+      </div>
+
+      <!-- ============ HOME ============ -->
+      <div class="screen-wrap" id="screen-home">
+        <div class="content">
+          <div class="greeting-row">
+            <div>
+              <div class="eyebrow" id="greetTime">Доброе утро</div>
+              <div style="font-family:'Fraunces',serif;font-size:19px;font-weight:500;" data-bind="name">Алина</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div class="bell"><i data-icon="bell"></i></div>
+              <div class="avatar"></div>
+            </div>
+          </div>
+
+          <div class="scan-cta">
+            <div class="eyebrow">AI-диагностика</div>
+            <h2>Как сегодня<br>чувствует себя кожа?</h2>
+            <p>Сфотографируй лицо или опиши ощущения — El Beauty поставит диагностику за 30 секунд.</p>
+            <button class="btn pulse" onclick="triggerPhotoPicker('chat')"><i data-icon="camera"></i> Начать диагностику</button>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="skin-score">
+              <div class="score-ring"><div class="in">82</div></div>
+              <div class="score-meta">
+                <p class="big">Состояние кожи: хорошее</p>
+                <p class="small">Гидратация ниже нормы на 12% · последний чек-ин 2 дня назад</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">
+            <h3>Сегодняшний план</h3>
+            <span onclick="showScreen('plan')" style="cursor:pointer;">весь план →</span>
+          </div>
+          <div class="row-card">
+            <div class="ic" style="background:var(--rose-soft);"><i data-icon="flask-conical"></i></div>
+            <div class="tx"><div class="t1">Сыворотка с ниацинамидом</div><div class="t2">Утро · после умывания</div></div>
+            <div class="chev">›</div>
+          </div>
+          <div class="row-card">
+            <div class="ic" style="background:var(--gold-soft);"><i data-icon="pill"></i></div>
+            <div class="tx"><div class="t1">Омега-3 + коллаген</div><div class="t2">С завтраком</div></div>
+            <div class="chev">›</div>
+          </div>
+
+          <div class="section-title">
+            <h3>Подобрано для тебя</h3>
+          </div>
+          <div class="pill-row" id="concernTags">
+            <div class="pill">Гидратация</div>
+            <div class="pill">Общий уход</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CHAT / DIAGNOSIS ============ -->
+      <div class="screen-wrap" id="screen-chat">
+        <div class="content" id="chatScroll" style="padding-bottom:190px;">
+          <div class="chat-header">
+            <div class="av"></div>
+            <div class="who">
+              <div class="t1">El Beauty AI</div>
+              <div class="t2">● на связи</div>
+            </div>
+          </div>
+
+          <div id="chatMessages">
+            <div class="bubble ai" data-bind-html="chatGreeting">Привет! Опиши, что беспокоит с кожей, или пришли фото лица — разберу по-настоящему и соберу план ухода.</div>
+          </div>
+
+          <button class="btn ghost" id="chatPhotoBtn" style="width:100%;justify-content:center;margin-top:2px;color:var(--plum);border-color:var(--line);" onclick="triggerPhotoPicker('chat')">
+            <i data-icon="camera" style="width:16px;height:16px;"></i> Прикрепить фото лица
+          </button>
+        </div>
+
+        <div id="chatInputWrap" style="position:fixed;left:50%;transform:translateX(-50%);bottom:78px;width:100%;max-width:480px;padding:10px 20px 12px;border-top:1px solid var(--line);background:var(--ivory);z-index:99;">
+          <div class="input-bar" style="padding-top:0;">
+            <input class="box" id="chatInput" placeholder="Написать El Beauty AI…" autocomplete="off"
+              style="border:none;outline:none;font-family:'Inter',sans-serif;"
+              onkeydown="if(event.key==='Enter'){sendChatMessage();}" />
+            <button class="send" onclick="sendChatMessage()"><i data-icon="send"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ FACE SCAN / AESTHETIC MATCH ============ -->
+      <div class="screen-wrap" id="screen-facematch">
+        <div class="content">
+          <div class="eyebrow">AI-скан лица</div>
+          <h1 class="hero">Подобрано по чертам лица</h1>
+          <p class="sub">Загрузи фото — AI разберёт форму лица, тон кожи и подберёт оттенки и уход.</p>
+
+          <div class="face-wrap" id="faceWrap" onclick="triggerPhotoPicker('face')" style="cursor:pointer;">
+            <div id="facePhotoBox" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--mute);">
+              <i data-icon="camera" style="width:28px;height:28px;color:var(--rose);"></i>
+              <div style="font-size:13px;font-weight:600;">Загрузить фото лица</div>
+              <div style="font-size:11px;">Фронтальный ракурс, дневной свет</div>
+            </div>
+          </div>
+
+          <div id="faceAnalysisEmpty" class="sub" style="text-align:center;padding:6px 0 10px;">Как только загрузишь фото — AI напишет разбор здесь.</div>
+
+          <div id="faceAnalysisResult" style="display:none;">
+            <div class="card" style="margin-bottom:14px;">
+              <div class="eyebrow" style="margin:0 0 8px;">РАЗБОР AI</div>
+              <div id="faceAnalysisText" style="font-size:13px;line-height:1.55;color:var(--ink);white-space:pre-line;"></div>
+            </div>
+            <button class="btn dark" style="width:100%;justify-content:center;margin-top:6px;" onclick="showScreen('shop')">Подобрать средства в маркете →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PLAN ============ -->
+      <div class="screen-wrap" id="screen-plan">
+        <div class="content">
+          <div class="eyebrow">Диагностика от 3 сентября</div>
+          <h1 class="hero">Твой персональный план</h1>
+          <p class="sub">Составлен на основе AI-диагностики: уход снаружи + питание изнутри.</p>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <div class="label">ГИДРАТАЦИЯ</div>
+              <div class="val">64%</div>
+              <div class="bar"><i style="width:64%;"></i></div>
+            </div>
+            <div class="metric">
+              <div class="label">ЭЛАСТИЧНОСТЬ</div>
+              <div class="val">78%</div>
+              <div class="bar"><i style="width:78%;"></i></div>
+            </div>
+          </div>
+
+          <div class="section-title"><h3>Уход снаружи</h3></div>
+          <div class="plan-item">
+            <div class="ph" style="background:var(--rose-soft);"><i data-icon="flask-conical"></i></div>
+            <div class="tx">
+              <div class="t1">Увлажняющая сыворотка с ниацинамидом</div>
+              <div class="t2">Восстанавливает барьер, снижает шелушение</div>
+              <span class="tag-time">Утро и вечер</span>
+            </div>
+          </div>
+          <div class="plan-item">
+            <div class="ph" style="background:var(--gold-soft);"><i data-icon="sparkles"></i></div>
+            <div class="tx">
+              <div class="t1">Энзимный пилинг</div>
+              <div class="t2">Мягкое обновление кожи без раздражения</div>
+              <span class="tag-time">1 раз в неделю</span>
+            </div>
+          </div>
+
+          <div class="section-title"><h3>Питание изнутри</h3></div>
+          <div class="plan-item">
+            <div class="ph" style="background:#EAF1EB;"><i data-icon="pill"></i></div>
+            <div class="tx">
+              <div class="t1">Омега-3 + коллаген комплекс</div>
+              <div class="t2">Поддержка эластичности и увлажнения кожи</div>
+              <span class="tag-time">Курс 3 недели</span>
+            </div>
+          </div>
+
+          <button class="btn dark" style="width:100%;justify-content:center;margin-top:6px;" onclick="showScreen('shop')">Собрать корзину ухода →</button>
+        </div>
+      </div>
+
+      <!-- ============ MARKETPLACE ============ -->
+      <div class="screen-wrap" id="screen-shop">
+        <div class="content">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div class="eyebrow">Маркетплейс</div>
+              <h1 class="hero" style="margin-bottom:6px;">Специалисты и средства</h1>
+            </div>
+            <div onclick="showScreen('cart')" style="position:relative;cursor:pointer;flex-shrink:0;margin-top:4px;">
+              <div class="bell"><i data-icon="shopping-bag"></i></div>
+              <div id="cartBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--plum);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;">0</div>
+            </div>
+          </div>
+          <p class="sub">Подобрано под твою диагностику и рядом с тобой.</p>
+
+          <div class="section-title"><h3>El Beauty Circle · похожие на тебя</h3></div>
+          <div class="circle-strip">
+            <div class="circle-card">
+              <div class="th"><span class="match">96% match</span><span class="play"><i data-icon="play" style="width:9px;height:9px;display:inline;vertical-align:-1px;"></i> 0:42</span></div>
+              <div class="body"><div class="n">Юля, 27</div><div class="m">та же сухость + акне</div></div>
+            </div>
+            <div class="circle-card">
+              <div class="th"><span class="match">91% match</span><span class="play"><i data-icon="play" style="width:9px;height:9px;display:inline;vertical-align:-1px;"></i> 1:10</span></div>
+              <div class="body"><div class="n">Дана, 24</div><div class="m">похожий тип кожи</div></div>
+            </div>
+            <div class="circle-card">
+              <div class="th"><span class="match">88% match</span><span class="play"><i data-icon="play" style="width:9px;height:9px;display:inline;vertical-align:-1px;"></i> 0:55</span></div>
+              <div class="body"><div class="n">Косметолог Марина</div><div class="m">разбор рутины</div></div>
+            </div>
+          </div>
+          <p class="sub" style="margin-top:2px;font-size:11.5px;">Короткие видео-разборы ухода от людей с максимально близким типом кожи — не общий совет, а живой пример.</p>
+
+          <div class="section-title"><h3>Косметологи рядом</h3></div>
+          <div class="pro-card" onclick="openBooking('Марина Соколова','Дерматокосметолог','3 500 ₽')" style="cursor:pointer;">
+            <div class="ph"></div>
+            <div class="tx">
+              <div class="t1">Марина Соколова</div>
+              <div class="t2">Дерматокосметолог · 1.2 км</div>
+              <span class="rating">★ 4.9 (214)</span>
+            </div>
+            <div class="price-tag">от 3 500 ₽</div>
+          </div>
+          <div class="pro-card" onclick="openBooking('Клиника DermaLux','Аппаратная косметология','5 200 ₽')" style="cursor:pointer;">
+            <div class="ph"></div>
+            <div class="tx">
+              <div class="t1">Клиника DermaLux</div>
+              <div class="t2">Аппаратная косметология · 2.4 км</div>
+              <span class="rating">★ 4.8 (521)</span>
+            </div>
+            <div class="price-tag">от 5 200 ₽</div>
+          </div>
+
+          <div class="section-title"><h3>Рекомендованные средства</h3></div>
+          <div class="prod-grid">
+            <div class="prod-card" onclick="addToCart('Сыворотка Niacinamide 10%','1 890 ₽')" style="cursor:pointer;">
+              <div class="ph"></div>
+              <div class="t1">Сыворотка Niacinamide 10%</div>
+              <div class="t2">El Beauty Nutrition</div>
+              <div class="price">1 890 ₽</div>
+            </div>
+            <div class="prod-card" onclick="addToCart('Омега-3 + коллаген','2 490 ₽')" style="cursor:pointer;">
+              <div class="ph"></div>
+              <div class="t1">Омега-3 + коллаген</div>
+              <div class="t2">курс на 30 дней</div>
+              <div class="price">2 490 ₽</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CART ============ -->
+      <div class="screen-wrap" id="screen-cart">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('shop')"><i data-icon="arrow-left"></i></div>
+            <h1>Корзина</h1>
+          </div>
+          <div id="cartItems"></div>
+          <div id="cartFooter" style="display:none;">
+            <div style="display:flex;justify-content:space-between;padding:16px 2px;border-top:1px solid var(--line);margin-top:6px;">
+              <span style="font-size:14px;font-weight:700;">Итого</span>
+              <span style="font-size:16px;font-weight:700;font-family:'Fraunces',serif;" id="cartTotal">0 ₽</span>
+            </div>
+            <button class="btn dark" style="width:100%;justify-content:center;" onclick="checkoutCart()">Оформить заказ</button>
+          </div>
+          <div class="book-confirm" id="cartConfirm">
+            <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h1 style="font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:0 0 8px;">Заказ оформлен</h1>
+            <p class="sub" style="margin:0 0 20px;">Средства появятся в разделе «Мои заказы» в профиле.</p>
+            <button class="btn dark" style="width:100%;justify-content:center;" onclick="showScreen('shop')">Вернуться в маркет</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ BOOKING ============ -->
+      <div class="screen-wrap" id="screen-booking">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('shop')"><i data-icon="arrow-left"></i></div>
+            <h1 id="bookingWho">Запись</h1>
+          </div>
+
+          <div id="bookingForm">
+            <p class="sub" id="bookingSub">Выбери дату и время</p>
+            <div class="day-strip" id="daySelect"></div>
+            <div class="slot-grid" id="slotSelect"></div>
+            <button class="btn dark" style="width:100%;justify-content:center;" id="bookingConfirmBtn" onclick="confirmBooking()" disabled>Подтвердить запись</button>
+          </div>
+
+          <div class="book-confirm" id="bookingConfirm">
+            <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h1 style="font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:0 0 8px;">Запись подтверждена</h1>
+            <p class="sub" id="bookingConfirmText" style="margin:0 0 20px;"></p>
+            <button class="btn dark" style="width:100%;justify-content:center;" onclick="showScreen('profile');showScreen('bookings')">Смотреть мои записи</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PROFILE ============ -->
+      <div class="screen-wrap" id="screen-profile">
+        <div class="content">
+          <div class="profile-head">
+            <div class="av"></div>
+            <div class="name">Алина Петрова</div>
+            <div class="sub2">С El Beauty с марта 2026</div>
+          </div>
+
+          <div class="stat-strip">
+            <div class="stat"><div class="n">14</div><div class="l">чек-ина</div></div>
+            <div class="divider"></div>
+            <div class="stat"><div class="n">82</div><div class="l">баллов кожи</div></div>
+            <div class="divider"></div>
+            <div class="stat"><div class="n">+18%</div><div class="l">за месяц</div></div>
+          </div>
+
+          <div class="scan-cta" style="padding:18px 18px;margin-bottom:16px;cursor:pointer;" onclick="showScreen('skinprofile')">
+            <div class="eyebrow">АНКЕТА КОЖИ</div>
+            <h2 style="font-size:16px;margin-bottom:6px;">Дополни или измени данные</h2>
+            <p style="max-width:100%;margin-bottom:14px;">Ответь ещё на пару вопросов или поправь то, что уже указал — AI будет советовать точнее</p>
+            <button class="btn" style="pointer-events:none;">Открыть анкету →</button>
+          </div>
+
+          <div class="menu-item" onclick="showScreen('history')" style="cursor:pointer;"><div class="l"><i data-icon="camera"></i> История диагностик</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('shop')" style="cursor:pointer;"><div class="l"><i data-icon="pill"></i> Подписка Skincare Nutrition</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('orders')" style="cursor:pointer;"><div class="l"><i data-icon="package"></i> Мои заказы</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('bookings')" style="cursor:pointer;"><div class="l"><i data-icon="calendar"></i> Записи к специалистам</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('feedback')" style="cursor:pointer;"><div class="l"><i data-icon="message-square"></i> Обратная связь</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('support')" style="cursor:pointer;"><div class="l"><i data-icon="life-buoy"></i> Поддержка</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('settings')" style="cursor:pointer;"><div class="l"><i data-icon="settings"></i> Настройки</div><div>›</div></div>
+        </div>
+      </div>
+
+      <!-- ============ SKIN PROFILE (view / edit / supplement) ============ -->
+      <div class="screen-wrap" id="screen-skinprofile">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Анкета кожи</h1>
+          </div>
+          <p class="sub">Меняй уже отвеченное или добавь новые пункты — сохранится сразу для AI.</p>
+
+          <div class="section-title"><h3>Тип кожи</h3></div>
+          <div class="pill-select" data-store="skinType">
+            <div class="pill-opt" data-val="Сухая">Сухая</div>
+            <div class="pill-opt" data-val="Жирная">Жирная</div>
+            <div class="pill-opt" data-val="Комбинированная">Комбинированная</div>
+            <div class="pill-opt" data-val="Нормальная">Нормальная</div>
+            <div class="pill-opt" data-val="Не знаю">Не знаю</div>
+          </div>
+
+          <div class="section-title"><h3>Что беспокоит</h3></div>
+          <div class="pill-select" data-store="concerns" data-multi="true">
+            <div class="pill-opt" data-val="Акне">Акне и высыпания</div>
+            <div class="pill-opt" data-val="Сухость">Сухость и шелушение</div>
+            <div class="pill-opt" data-val="Жирный блеск">Жирный блеск</div>
+            <div class="pill-opt" data-val="Морщины">Морщины и упругость</div>
+            <div class="pill-opt" data-val="Пигментация">Пигментация</div>
+            <div class="pill-opt" data-val="Чувствительность">Чувствительность</div>
+            <div class="pill-opt" data-val="Расширенные поры">Расширенные поры</div>
+          </div>
+
+          <div class="section-title"><h3>Реакция на новые средства</h3></div>
+          <div class="pill-select" data-store="reaction">
+            <div class="pill-opt" data-val="Спокойно, без реакций">Спокойно, без реакций</div>
+            <div class="pill-opt" data-val="Иногда раздражается">Иногда раздражается</div>
+            <div class="pill-opt" data-val="Часто реагирует остро">Часто реагирует остро</div>
+          </div>
+
+          <div class="section-title"><h3>Текущий уход</h3></div>
+          <div class="pill-select" data-store="routine">
+            <div class="pill-opt" data-val="Почти никакого">Почти никакого</div>
+            <div class="pill-opt" data-val="Базовый (очищение + крем)">Базовый (очищение + крем)</div>
+            <div class="pill-opt" data-val="Продвинутый (сыворотки, кислоты)">Продвинутый (сыворотки, кислоты)</div>
+          </div>
+
+          <div class="section-title" style="margin-top:26px;"><h3>Дополнительные вопросы</h3></div>
+
+          <div class="section-title"><h3 style="font-size:13.5px;color:var(--mute);">Как часто очищаешь кожу</h3></div>
+          <div class="pill-select" data-store="cleanFreq">
+            <div class="pill-opt" data-val="Раз в день">Раз в день</div>
+            <div class="pill-opt" data-val="Два раза в день">Два раза в день</div>
+            <div class="pill-opt" data-val="Больше двух раз">Больше двух раз</div>
+          </div>
+
+          <div class="section-title"><h3 style="font-size:13.5px;color:var(--mute);">Есть непереносимости / аллергии</h3></div>
+          <div class="pill-select" data-store="allergies" data-multi="true">
+            <div class="pill-opt" data-val="Нет">Нет</div>
+            <div class="pill-opt" data-val="Ретинол">Ретинол</div>
+            <div class="pill-opt" data-val="Кислоты (AHA/BHA)">Кислоты (AHA/BHA)</div>
+            <div class="pill-opt" data-val="Отдушки и парфюм">Отдушки и парфюм</div>
+            <div class="pill-opt" data-val="Другое">Другое (уточни в заметке ниже)</div>
+          </div>
+
+          <div class="section-title"><h3 style="font-size:13.5px;color:var(--mute);">Главная цель ухода сейчас</h3></div>
+          <div class="pill-select" data-store="goal">
+            <div class="pill-opt" data-val="Профилактика">Профилактика</div>
+            <div class="pill-opt" data-val="Решить конкретную проблему">Решить конкретную проблему</div>
+            <div class="pill-opt" data-val="Подготовка к событию">Подготовка к событию</div>
+            <div class="pill-opt" data-val="Поддержание результата">Поддержание результата</div>
+          </div>
+
+          <div class="section-title"><h3>Заметка</h3></div>
+          <textarea class="field" id="spNotes" placeholder="Что ещё важно учесть?" style="min-height:100px;resize:none;font-family:'Inter',sans-serif;margin-bottom:16px;"></textarea>
+
+          <button class="btn dark" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="saveSkinProfileForm()">Сохранить</button>
+          <div id="spSavedNote" style="display:none;text-align:center;font-size:12px;color:var(--sage);font-weight:600;padding-bottom:6px;">Сохранено ✓</div>
+        </div>
+      </div>
+
+      <!-- ============ BOOKINGS LIST ============ -->
+      <div class="screen-wrap" id="screen-bookings">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Записи к специалистам</h1>
+          </div>
+          <div id="bookingsList"></div>
+        </div>
+      </div>
+
+      <!-- ============ ORDERS ============ -->
+      <div class="screen-wrap" id="screen-orders">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Мои заказы</h1>
+          </div>
+          <div id="ordersList"></div>
+        </div>
+      </div>
+
+      <!-- ============ DIAGNOSTICS HISTORY ============ -->
+      <div class="screen-wrap" id="screen-history">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>История диагностик</h1>
+          </div>
+          <div class="plan-item">
+            <div class="ph" style="background:var(--gold-soft);"><i data-icon="sparkles"></i></div>
+            <div class="tx"><div class="t1">Сегодня · Скан кожи</div><div class="t2">Балл 82 · гидратация ниже нормы на 12%</div></div>
+          </div>
+          <div class="plan-item">
+            <div class="ph" style="background:var(--rose-soft);"><i data-icon="flask-conical"></i></div>
+            <div class="tx"><div class="t1">2 дня назад · Скан кожи</div><div class="t2">Балл 78 · лёгкое шелушение в зоне щёк</div></div>
+          </div>
+          <div class="plan-item">
+            <div class="ph" style="background:#EAF1EB;"><i data-icon="scan-face"></i></div>
+            <div class="tx"><div class="t1">9 дней назад · Скан лица</div><div class="t2">Форма: овал · подтон: тёплый</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ FEEDBACK ============ -->
+      <div class="screen-wrap" id="screen-feedback">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Обратная связь</h1>
+          </div>
+          <div id="feedbackForm">
+            <p class="sub">Насколько тебе нравится El Beauty?</p>
+            <div class="stars" id="starsRow">
+              <svg data-v="1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+              <svg data-v="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+              <svg data-v="3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+              <svg data-v="4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+              <svg data-v="5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>
+            </div>
+            <textarea class="field" id="feedbackText" placeholder="Что понравилось, а что можно улучшить?"></textarea>
+            <button class="btn dark" style="width:100%;justify-content:center;margin-top:14px;" onclick="submitFeedback()">Отправить отзыв</button>
+          </div>
+          <div class="book-confirm" id="feedbackConfirm">
+            <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h1 style="font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:0 0 8px;">Спасибо за отзыв!</h1>
+            <p class="sub" style="margin:0;">Мы правда читаем каждое сообщение и учитываем в развитии El Beauty.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SUPPORT ============ -->
+      <div class="screen-wrap" id="screen-support">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Поддержка</h1>
+          </div>
+          <p class="sub">Частые вопросы</p>
+          <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">Как работает AI-диагностика? <i data-icon="chevron-right" class="faq-chev"></i></div>
+            <div class="faq-a">AI анализирует фото или твоё описание и определяет состояние кожи: гидратацию, эластичность, наличие воспалений — за 30 секунд.</div>
+          </div>
+          <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">Можно ли отменить запись к специалисту? <i data-icon="chevron-right" class="faq-chev"></i></div>
+            <div class="faq-a">Да, в разделе «Записи к специалистам» в профиле — отмена доступна не позднее чем за 3 часа до визита.</div>
+          </div>
+          <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">Как отменить подписку Nutrition? <i data-icon="chevron-right" class="faq-chev"></i></div>
+            <div class="faq-a">Профиль → Подписка Skincare Nutrition → «Управление подпиской». Списания прекратятся со следующего цикла.</div>
+          </div>
+          <div class="faq-item" onclick="this.classList.toggle('open')">
+            <div class="faq-q">El Beauty ставит медицинский диагноз? <i data-icon="chevron-right" class="faq-chev"></i></div>
+            <div class="faq-a">Нет, это косметологическая AI-рекомендация. При серьёзных проблемах с кожей мы советуем очную консультацию врача.</div>
+          </div>
+          <button class="btn dark" style="width:100%;justify-content:center;margin-top:20px;" onclick="showScreen('chat')"><i data-icon="message-square"></i> Написать в поддержку</button>
+        </div>
+      </div>
+
+      <!-- ============ SETTINGS ============ -->
+      <div class="screen-wrap" id="screen-settings">
+        <div class="content">
+          <div class="sub-head">
+            <div class="back-btn" onclick="showScreen('profile')"><i data-icon="arrow-left"></i></div>
+            <h1>Настройки</h1>
+          </div>
+          <div class="switch-row">
+            <div><div class="t1">Push-уведомления</div><div class="t2">Напоминания об уходе и записях</div></div>
+            <div class="switch on" id="swPush" onclick="toggleSwitch('swPush')"><i></i></div>
+          </div>
+          <div class="switch-row">
+            <div><div class="t1">Email-рассылка</div><div class="t2">Новости и советы по уходу</div></div>
+            <div class="switch" id="swEmail" onclick="toggleSwitch('swEmail')"><i></i></div>
+          </div>
+          <div class="switch-row">
+            <div><div class="t1">El Beauty Circle</div><div class="t2">Показывать похожих людей в маркетплейсе</div></div>
+            <div class="switch on" id="swCircle" onclick="toggleSwitch('swCircle')"><i></i></div>
+          </div>
+          <div class="switch-row" style="border-bottom:none;">
+            <div><div class="t1">Геолокация</div><div class="t2">Специалисты и клиники рядом с тобой</div></div>
+            <div class="switch on" id="swGeo" onclick="toggleSwitch('swGeo')"><i></i></div>
+          </div>
+          <div class="menu-item" onclick="showScreen('onboarding');obGoto(1);" style="cursor:pointer;margin-top:10px;"><div class="l">Изменить анкету профиля</div><div>›</div></div>
+          <div class="menu-item" onclick="showScreen('skinprofile')" style="cursor:pointer;"><div class="l">Анкета кожи</div><div>›</div></div>
+          <div class="menu-item" onclick="startAdvancedQuiz()" style="cursor:pointer;"><div class="l">Расширенный опрос с AI-дерматологом</div><div>›</div></div>
+        </div>
+      </div>
+
+      <div class="navbar">
+        <button class="navitem active" data-screen="home" onclick="showScreen('home')"><span class="dot"><i data-icon="home"></i></span>Главная</button>
+        <button class="navitem" data-screen="chat" onclick="showScreen('chat')"><span class="dot"><i data-icon="sparkles"></i></span>AI-агент</button>
+        <button class="navitem" data-screen="plan" onclick="showScreen('plan')"><span class="dot"><i data-icon="clipboard-list"></i></span>План</button>
+        <button class="navitem" data-screen="shop" onclick="showScreen('shop')"><span class="dot"><i data-icon="shopping-bag"></i></span>Маркет</button>
+        <button class="navitem" data-screen="profile" onclick="showScreen('profile')"><span class="dot"><i data-icon="user-round"></i></span>Профиль</button>
+      </div>
+  </div>
+</div>
+
+<script>
+const ICON_PATHS = {
+  bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3.3"/>',
+  'flask-conical': '<path d="M9 2v6.2L3.8 19a1.4 1.4 0 0 0 1.2 2h14a1.4 1.4 0 0 0 1.2-2L15 8.2V2"/><path d="M8.5 2h7"/><path d="M8 14h8"/>',
+  pill: '<rect x="4.5" y="9.5" width="15" height="6.7" rx="3.3" transform="rotate(-45 12 12)"/><line x1="8.8" y1="15.2" x2="15.2" y2="8.8"/>',
+  send: '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
+  'scan-face': '<path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20H8"/><path d="M16 20h2.5a1.5 1.5 0 0 0 1.5-1.5V16"/><circle cx="9" cy="10.5" r="0.8" fill="currentColor" stroke="none"/><circle cx="15" cy="10.5" r="0.8" fill="currentColor" stroke="none"/><path d="M9 14.5c1 .8 3 .8 4 0"/>',
+  palette: '<path d="M12 21a9 9 0 1 1 0-18 8 8 0 0 1 8 8c0 1.7-1.3 3-3 3h-1.6c-1 0-1.6 1.3-.8 2 .5.4.8 1 .8 1.7 0 1.3-1.1 2.3-2.4 2.3z"/><circle cx="7.5" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="10" cy="7.2" r=".9" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r=".9" fill="currentColor" stroke="none"/>',
+  contrast: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/>',
+  'pencil-line': '<path d="M12.5 19.5H21"/><path d="M16.4 3.6a2 2 0 0 1 2.8 2.8L7 18.6l-4 1 1-4z"/>',
+  sparkles: '<path d="M12 3l1.4 4.3L18 9l-4.6 1.7L12 15l-1.4-4.3L6 9l4.6-1.7z"/><path d="M5 18l.6-1.7L7.3 16l-1.7-.6L5 13.7l-.6 1.7L2.7 16l1.7.6z"/>',
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+  package: '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3.3 7.6 12 12.5l8.7-4.9"/><path d="M12 12.5V21"/>',
+  calendar: '<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M16 2.5v4"/><path d="M8 2.5v4"/><path d="M3 9.5h18"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+  'clipboard-list': '<rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 11h6"/><path d="M9 15h6"/><path d="M9 19h4"/>',
+  'shopping-bag': '<path d="M6.2 8h11.6l1 12.1a1.9 1.9 0 0 1-1.9 2.1H7.1a1.9 1.9 0 0 1-1.9-2.1z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  'user-round': '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.4-4.4 4.8-7 8-7s6.6 2.6 8 7"/>',
+  'arrow-left': '<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',
+  'message-square': '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  'life-buoy': '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.9" y1="4.9" x2="9.2" y2="9.2"/><line x1="14.8" y1="14.8" x2="19.1" y2="19.1"/><line x1="14.8" y1="9.2" x2="19.1" y2="4.9"/><line x1="4.9" y1="19.1" x2="9.2" y2="14.8"/>',
+  'chevron-right': '<polyline points="9 18 15 12 9 6"/>',
+};
+function renderIcons(){
+  document.querySelectorAll('[data-icon]').forEach(function(el){
+    var name = el.getAttribute('data-icon');
+    var d = ICON_PATHS[name];
+    if(!d || el.querySelector('svg')) return;
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+  });
+}
+
+const NO_NAV_SCREENS = ['onboarding','booking','bookings','orders','history','feedback','support','settings','cart','skinprofile'];
+
+function showScreen(name){
+  document.querySelectorAll('.screen-wrap').forEach(el => {
+    el.classList.remove('active');
+    el.classList.remove('entering');
+  });
+  const target = document.getElementById('screen-' + name);
+  target.classList.add('active');
+  void target.offsetWidth;
+  target.classList.add('entering');
+
+  document.querySelectorAll('.navitem').forEach(el => el.classList.remove('active'));
+  const nav = document.querySelector('.navitem[data-screen="' + name + '"]');
+  if(nav) nav.classList.add('active');
+
+  const navbar = document.querySelector('.navbar');
+  navbar.style.display = NO_NAV_SCREENS.includes(name) ? 'none' : 'flex';
+  const inputWrap = document.getElementById('chatInputWrap');
+  if(inputWrap) inputWrap.style.display = (name === 'chat') ? 'block' : 'none';
+
+  window.scrollTo(0, 0);
+
+  if(name === 'bookings') renderBookings();
+  if(name === 'orders') renderOrders();
+  if(name === 'cart') renderCart();
+  if(name === 'skinprofile') populateSkinProfileForm();
+}
+
+/* ===================== SKIN PROFILE FORM (view / edit / supplement) ===================== */
+function populateSkinProfileForm(){
+  const sp = state.skinProfile || {};
+  document.querySelectorAll('#screen-skinprofile .pill-select').forEach(group => {
+    const store = group.dataset.store;
+    const multi = group.dataset.multi === 'true';
+    const current = sp[store];
+    group.querySelectorAll('.pill-opt').forEach(opt => {
+      const isSel = multi
+        ? Array.isArray(current) && current.includes(opt.dataset.val)
+        : current === opt.dataset.val;
+      opt.classList.toggle('sel', isSel);
+    });
+  });
+  const notesEl = document.getElementById('spNotes');
+  if(notesEl) notesEl.value = sp.notes || '';
+  document.getElementById('spSavedNote').style.display = 'none';
+}
+function saveSkinProfileForm(){
+  state.skinProfile.notes = document.getElementById('spNotes').value.trim();
+  renderConcernTags();
+  saveState();
+  const note = document.getElementById('spSavedNote');
+  note.style.display = 'block';
+  setTimeout(() => { note.style.display = 'none'; }, 2200);
+}
+
+/* ===================== APP STATE ===================== */
+const state = {
+  name: '', gender: '', age: '', city: '',
+  skinProfile: { skinType: '', concerns: [], reaction: '', routine: '', cleanFreq: '', allergies: [], goal: '', notes: '' },
+  bookings: [], orders: [], cart: [],
+  lastPhoto: null,
+  chatHistory: [] // {role:'user'|'assistant', text}
+};
+let selectedBookingWho = null, selectedBookingPrice = null;
+let selectedDay = null, selectedSlot = null;
+let photoTarget = 'chat';
+
+/* ===================== ONBOARDING ===================== */
+const OB_TOTAL_STEPS = 10;
+const OB_INVITE_STEP = 5;
+let obStep = 1;
+function obGoto(step){
+  document.querySelectorAll('.ob-step').forEach(el => {
+    el.style.display = (Number(el.dataset.step) === step) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.ob-dot').forEach(el => {
+    const s = Number(el.dataset.step);
+    el.classList.toggle('on', s === step);
+    el.classList.toggle('done', s < step);
+  });
+  document.getElementById('obBack').style.display = (step > 1 && step !== OB_INVITE_STEP) ? 'inline-flex' : 'none';
+  document.getElementById('obNext').textContent = step < OB_TOTAL_STEPS ? 'Далее' : 'Готово';
+  document.getElementById('obDefaultNav').style.display = (step === OB_INVITE_STEP) ? 'none' : 'flex';
+  document.getElementById('obSkipLink').style.display = (step === OB_INVITE_STEP) ? 'none' : 'block';
+  obStep = step;
+}
+function obNext(){
+  if(obStep === 1){ state.name = document.getElementById('obName').value.trim(); }
+  if(obStep === 3){ state.age = document.getElementById('obAge').value.trim(); }
+  if(obStep === 4){ state.city = document.getElementById('obCity').value.trim(); }
+  if(obStep === OB_TOTAL_STEPS){
+    state.skinProfile.notes = document.getElementById('obNotes').value.trim();
+    obFinish(false);
+    return;
+  }
+  obGoto(obStep + 1);
+}
+function obPrev(){ if(obStep > 1) obGoto(obStep - 1); }
+document.addEventListener('click', function(e){
+  const opt = e.target.closest('.pill-opt');
+  if(!opt) return;
+  const group = opt.parentElement;
+  if(!group.classList.contains('pill-select')) return;
+  const store = group.dataset.store;
+  const multi = group.dataset.multi === 'true';
+  if(multi){
+    opt.classList.toggle('sel');
+  } else {
+    group.querySelectorAll('.pill-opt').forEach(el => el.classList.remove('sel'));
+    opt.classList.add('sel');
+  }
+  if(!store) return;
+  const value = multi
+    ? Array.from(group.querySelectorAll('.pill-opt.sel')).map(el => el.dataset.val)
+    : opt.dataset.val;
+  if(store === 'gender'){ state.gender = value; }
+  else { state.skinProfile[store] = value; }
+});
+function obFinish(skipped){
+  if(skipped){
+    state.name = state.name || '';
+  }
+  applyPersonalization();
+  showScreen('home');
+  saveState();
+}
+function applyPersonalization(){
+  const displayName = state.name || 'Гость';
+  document.querySelectorAll('[data-bind="name"]').forEach(el => el.textContent = displayName);
+  const hour = new Date().getHours();
+  const greet = hour < 5 ? 'Доброй ночи' : hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер';
+  const gt = document.getElementById('greetTime');
+  if(gt) gt.textContent = greet;
+  const profName = document.querySelector('.profile-head .name');
+  if(profName) profName.textContent = state.name ? (state.name) : 'Гость El Beauty';
+  const chatGreet = document.querySelector('[data-bind-html="chatGreeting"]');
+  if(chatGreet && state.name){
+    chatGreet.textContent = 'Привет, ' + state.name + '! Загрузи фото лица при дневном свете или просто опиши, что беспокоит.';
+  }
+  renderConcernTags();
+}
+function renderConcernTags(){
+  const row = document.getElementById('concernTags');
+  if(!row) return;
+  const tags = [];
+  if(state.skinProfile.skinType) tags.push(state.skinProfile.skinType + ' кожа');
+  (state.skinProfile.concerns || []).forEach(c => tags.push(c));
+  if(tags.length === 0){ tags.push('Гидратация', 'Общий уход'); }
+  row.innerHTML = tags.map(t => '<div class="pill">' + t + '</div>').join('');
+}
+
+/* ===================== PERSISTENT STORAGE ===================== */
+/*
+ * Пробуем window.storage (работает в превью claude.ai) — если недоступен
+ * (например, на GitHub Pages в обычном браузере), падаем на localStorage,
+ * чтобы профиль всё равно сохранялся хотя бы в рамках этого браузера.
+ */
+const LS_KEY = 'elbeauty-profile';
+function buildStatePayload(){
+  return JSON.stringify({
+    name: state.name, gender: state.gender, age: state.age, city: state.city,
+    skinProfile: state.skinProfile,
+    cart: state.cart, orders: state.orders, bookings: state.bookings
+  });
+}
+async function saveState(){
+  const payload = buildStatePayload();
+  let savedViaClaudeStorage = false;
+  try{
+    if(window.storage){
+      await window.storage.set(LS_KEY, payload, false);
+      savedViaClaudeStorage = true;
+    }
+  }catch(e){ /* window.storage unavailable in this environment */ }
+  if(!savedViaClaudeStorage){
+    try{ localStorage.setItem(LS_KEY, payload); }catch(e){ /* localStorage blocked too — app still works, just won't persist */ }
+  }
+}
+async function loadState(){
+  try{
+    if(window.storage){
+      const result = await window.storage.get(LS_KEY, false);
+      if(result && result.value){
+        Object.assign(state, JSON.parse(result.value));
+        return true;
+      }
+    }
+  }catch(e){ /* nothing saved yet via window.storage, or unavailable — try localStorage below */ }
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      Object.assign(state, JSON.parse(raw));
+      return true;
+    }
+  }catch(e){ /* localStorage unavailable too */ }
+  return false;
+}
+
+/* ===================== REAL AI CHAT (with vision) ===================== */
+/*
+ * ВАЖНО ДЛЯ ДЕПЛОЯ НА GITHUB PAGES:
+ * URL ниже по умолчанию — специальный endpoint, который работает БЕСПЛАТНО И БЕЗ
+ * КЛЮЧА только внутри превью Claude (claude.ai). На голом GitHub Pages он не ответит.
+ *
+ * Готовый прокси лежит рядом — файл worker.js (Cloudflare Worker, тот же принцип,
+ * что у Crocus Health / crocus-ai.zhcg2b4hg4.workers.dev). Разверни его по инструкции
+ * в шапке worker.js (5 минут через дашборд Cloudflare, без консоли) и подставь сюда
+ * адрес своего воркера:
+ */
+const AI_ENDPOINT = "https://api.anthropic.com/v1/messages"; // <-- замени на https://<твой-worker>.workers.dev после деплоя worker.js
+
+async function callClaude(userMessage, imageDataUrl){
+  const sp = state.skinProfile || {};
+  const profileCtx = 'Профиль пользователя: имя ' + (state.name || 'не указано') +
+    ', пол ' + (state.gender || 'не указан') + ', возраст ' + (state.age || 'не указан') +
+    ', город ' + (state.city || 'не указан') + '. ' +
+    'Анкета кожи (заполнена на приёме у AI-дерматолога): тип кожи — ' + (sp.skinType || 'не указан') +
+    '; главные проблемы — ' + (sp.concerns && sp.concerns.length ? sp.concerns.join(', ') : 'не указаны') +
+    '; реакция на новые средства — ' + (sp.reaction || 'не указана') +
+    '; текущий уход — ' + (sp.routine || 'не указан') +
+    '; частота очищения — ' + (sp.cleanFreq || 'не указана') +
+    '; непереносимости/аллергии — ' + (sp.allergies && sp.allergies.length ? sp.allergies.join(', ') : 'не указаны') +
+    '; главная цель — ' + (sp.goal || 'не указана') +
+    (sp.notes ? '; дополнительно от пользователя: «' + sp.notes + '»' : '') + '.';
+  const system = 'Ты — El Beauty AI, дружелюбный AI-косметолог и AI-нутрициолог в приложении El Beauty ' +
+    '(экосистема Crocus Health). Отвечай кратко на русском (3-6 предложений), по делу, тепло и профессионально. ' +
+    'Если получаешь фото лица — реально опиши, что видишь: тон кожи, признаки сухости/жирности/покраснений, форму лица, ' +
+    'если уместно. Учитывай анкету кожи пользователя ниже при рекомендациях. Давай практичные советы по уходу и ' +
+    'питанию (сыворотки, витамины), можешь мягко предложить записаться к косметологу через приложение или ' +
+    'посмотреть план ухода. Не ставь медицинских диагнозов, уточняй, что это не замена визиту к врачу при ' +
+    'серьёзных проблемах. ' + profileCtx;
+
+  const content = [];
+  if(imageDataUrl){
+    const match = imageDataUrl.match(/^data:(.*?);base64,(.*)$/);
+    if(match){
+      content.push({ type: 'image', source: { type: 'base64', media_type: match[1], data: match[2] } });
+    }
+  }
+  content.push({ type: 'text', text: system + '\n\nСообщение пользователя: ' + userMessage });
+
+  const response = await fetch(AI_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 500,
+      messages: [{ role: "user", content }]
+    })
+  });
+  const data = await response.json();
+  const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+  return textBlocks.join('\n') || 'Не удалось получить ответ. Попробуй ещё раз.';
+}
+
+function addBubble(text, who){
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'bubble ' + (who === 'user' ? 'me' : 'ai');
+  div.textContent = text;
+  div.style.animation = 'cardIn .35s cubic-bezier(.16,.84,.44,1) both';
+  wrap.appendChild(div);
+  scrollChatToBottom();
+  return div;
+}
+function addImageBubble(dataUrl){
+  const wrap = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'bubble me';
+  div.style.padding = '5px';
+  div.style.animation = 'cardIn .35s cubic-bezier(.16,.84,.44,1) both';
+  div.innerHTML = '<img src="' + dataUrl + '" style="display:block;width:180px;height:180px;object-fit:cover;border-radius:12px;" />';
+  wrap.appendChild(div);
+  scrollChatToBottom();
+}
+function addTypingBubble(){
+  const wrap = document.getElementById('chatMessages');
+  const typing = document.createElement('div');
+  typing.className = 'bubble ai typing-bubble';
+  typing.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+  wrap.appendChild(typing);
+  scrollChatToBottom();
+  return typing;
+}
+function scrollChatToBottom(){
+  window.scrollTo({ top: document.documentElement.scrollHeight, behavior:'smooth' });
+}
+let chatBusy = false;
+async function sendChatMessage(){
+  if(chatBusy) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  addBubble(text, 'user');
+  state.chatHistory.push({role:'user', text});
+
+  const typing = addTypingBubble();
+  chatBusy = true;
+  try{
+    const reply = await callClaude(text);
+    typing.remove();
+    addBubble(reply, 'ai');
+    state.chatHistory.push({role:'assistant', text: reply});
+  }catch(err){
+    typing.remove();
+    addBubble('Не удалось связаться с AI — проверь подключение к интернету и попробуй снова.', 'ai');
+  }
+  chatBusy = false;
+}
+
+/* ===================== ADVANCED AI-LED INTAKE ===================== */
+async function startAdvancedQuiz(){
+  showScreen('chat');
+  const wrap = document.getElementById('chatMessages');
+  wrap.innerHTML = '';
+  addBubble('Начинаем расширенный опрос. Я буду задавать уточняющие вопросы по одному — отвечай в чате своими словами, а в конце соберу более точный план ухода.', 'ai');
+  if(chatBusy) return;
+  chatBusy = true;
+  const typing = addTypingBubble();
+  try{
+    const reply = await callClaude(
+      'Начни расширенный опрос по коже как внимательный дерматолог на приёме. У тебя уже есть базовая анкета пользователя ' +
+      '(см. профиль выше в системном промпте) — не повторяй эти вопросы. Задай ОДИН первый уточняющий вопрос, который ' +
+      'реально поможет глубже понять кожу и подобрать уход точнее. Только один вопрос, без списка, без предисловий.'
+    );
+    typing.remove();
+    addBubble(reply, 'ai');
+    state.chatHistory.push({role:'assistant', text: reply});
+  }catch(err){
+    typing.remove();
+    addBubble('Не удалось начать опрос — проверь подключение к интернету и попробуй снова.', 'ai');
+  }
+  chatBusy = false;
+}
+
+/* ===================== REAL PHOTO CAPTURE + VISION ANALYSIS ===================== */
+function triggerPhotoPicker(target){
+  photoTarget = target;
+  document.getElementById('photoInput').click();
+}
+function handlePhotoUpload(event){
+  const file = event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    state.lastPhoto = ev.target.result;
+    if(photoTarget === 'face'){
+      renderFacePhoto();
+      analyzeFaceAesthetics();
+    } else {
+      showScreen('chat');
+      addImageBubble(state.lastPhoto);
+      analyzePhotoInChat();
+    }
+  };
+  reader.readAsDataURL(file);
+}
+async function analyzePhotoInChat(){
+  if(chatBusy) return;
+  chatBusy = true;
+  const typing = addTypingBubble();
+  try{
+    const reply = await callClaude('Вот фото моего лица. Проанализируй состояние кожи: тон, гидратация, жирность, есть ли покраснения или высыпания. Дай короткий практичный план ухода.', state.lastPhoto);
+    typing.remove();
+    addBubble(reply, 'ai');
+    state.chatHistory.push({role:'assistant', text: reply});
+  }catch(err){
+    typing.remove();
+    addBubble('Не удалось проанализировать фото — проверь подключение к интернету и попробуй снова.', 'ai');
+  }
+  chatBusy = false;
+}
+function renderFacePhoto(){
+  document.getElementById('facePhotoBox').outerHTML =
+    '<img src="' + state.lastPhoto + '" style="width:100%;height:100%;object-fit:cover;" />';
+}
+async function analyzeFaceAesthetics(){
+  document.getElementById('faceAnalysisEmpty').style.display = 'none';
+  const result = document.getElementById('faceAnalysisResult');
+  const textEl = document.getElementById('faceAnalysisText');
+  result.style.display = 'block';
+  textEl.textContent = 'AI разбирает фото…';
+  try{
+    const reply = await callClaude(
+      'Вот фото моего лица. Определи примерную форму лица, подтон кожи (тёплый/холодный/нейтральный) и дай ' +
+      'краткие рекомендации: подходящий оттенок тонального крема, схема контуринга под форму лица, форма бровей. ' +
+      'Ответь структурированно, короткими пунктами.', state.lastPhoto);
+    textEl.textContent = reply;
+  }catch(err){
+    textEl.textContent = 'Не удалось проанализировать фото — проверь подключение к интернету и попробуй ещё раз.';
+  }
+}
+
+/* ===================== BOOKING ===================== */
+function openBooking(who, spec, price){
+  selectedBookingWho = who; selectedBookingPrice = price;
+  selectedDay = null; selectedSlot = null;
+  document.getElementById('bookingWho').textContent = who;
+  document.getElementById('bookingSub').textContent = spec + ' · от ' + price;
+  document.getElementById('bookingForm').style.display = 'block';
+  document.getElementById('bookingConfirm').classList.remove('show');
+  document.getElementById('bookingConfirmBtn').disabled = true;
+
+  const days = [];
+  const dayNames = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'];
+  const today = new Date();
+  for(let i=0;i<6;i++){
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    days.push({ label: dayNames[d.getDay()], num: d.getDate(), key: d.toISOString().slice(0,10) });
+  }
+  const dayEl = document.getElementById('daySelect');
+  dayEl.innerHTML = days.map((d,i) =>
+    '<div class="day-chip' + (i===0?' sel':'') + '" data-key="' + d.key + '" onclick="pickDay(this,\'' + d.key + '\')"><div class="d1">' + d.label + '</div><div class="d2">' + d.num + '</div></div>'
+  ).join('');
+  selectedDay = days[0].key;
+
+  const slots = ['10:00','11:30','13:00','15:00','16:30','18:00'];
+  document.getElementById('slotSelect').innerHTML = slots.map(t =>
+    '<div class="slot" onclick="pickSlot(this,\'' + t + '\')">' + t + '</div>'
+  ).join('');
+
+  showScreen('booking');
+}
+function pickDay(el, key){
+  document.querySelectorAll('.day-chip').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedDay = key;
+}
+function pickSlot(el, time){
+  document.querySelectorAll('.slot').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedSlot = time;
+  document.getElementById('bookingConfirmBtn').disabled = false;
+}
+function confirmBooking(){
+  if(!selectedDay || !selectedSlot) return;
+  const dateObj = new Date(selectedDay);
+  const dateStr = dateObj.toLocaleDateString('ru-RU', { day:'numeric', month:'long' });
+  state.bookings.push({ who: selectedBookingWho, date: dateStr, time: selectedSlot, price: selectedBookingPrice });
+  document.getElementById('bookingForm').style.display = 'none';
+  document.getElementById('bookingConfirm').classList.add('show');
+  document.getElementById('bookingConfirmText').textContent = selectedBookingWho + ' · ' + dateStr + ' в ' + selectedSlot;
+  saveState();
+}
+function renderBookings(){
+  const el = document.getElementById('bookingsList');
+  if(state.bookings.length === 0){
+    el.innerHTML = '<div class="empty-state"><i data-icon="calendar" style="width:32px;height:32px;margin:0 auto 12px;display:block;color:var(--line);"></i>Пока нет записей.<br>Запишись к специалисту в разделе «Маркет».</div>';
+    renderIcons();
+    return;
+  }
+  el.innerHTML = state.bookings.map(b =>
+    '<div class="plan-item"><div class="ph" style="background:var(--gold-soft);"><i data-icon="calendar"></i></div>' +
+    '<div class="tx"><div class="t1">' + b.who + '</div><div class="t2">' + b.date + ' в ' + b.time + ' · от ' + b.price + '</div></div></div>'
+  ).join('');
+  renderIcons();
+}
+
+/* ===================== ORDERS ===================== */
+function addToCart(name, price){
+  state.cart.push({ name, price });
+  updateCartBadge();
+  saveState();
+  const btn = event.currentTarget;
+  const priceEl = btn.querySelector('.price');
+  const old = priceEl.textContent;
+  priceEl.textContent = 'В корзине ✓';
+  priceEl.style.color = 'var(--sage)';
+  setTimeout(() => { priceEl.textContent = old; priceEl.style.color = ''; }, 1400);
+}
+function updateCartBadge(){
+  const badge = document.getElementById('cartBadge');
+  if(!badge) return;
+  if(state.cart.length > 0){
+    badge.style.display = 'flex';
+    badge.textContent = state.cart.length;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+function priceToNumber(p){
+  return Number(p.replace(/[^\d]/g, '')) || 0;
+}
+function renderCart(){
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  document.getElementById('cartConfirm').classList.remove('show');
+  if(state.cart.length === 0){
+    el.innerHTML = '<div class="empty-state"><i data-icon="shopping-bag" style="width:32px;height:32px;margin:0 auto 12px;display:block;color:var(--line);"></i>Корзина пуста.<br>Добавь рекомендованные средства в «Маркете».</div>';
+    footer.style.display = 'none';
+    renderIcons();
+    return;
+  }
+  el.innerHTML = state.cart.map((item, i) =>
+    '<div class="plan-item"><div class="ph" style="background:var(--gold-soft);"><i data-icon="pill"></i></div>' +
+    '<div class="tx"><div class="t1">' + item.name + '</div><div class="t2">' + item.price + '</div></div>' +
+    '<div onclick="removeFromCart(' + i + ')" style="cursor:pointer;color:var(--mute);padding:6px;">✕</div></div>'
+  ).join('');
+  const total = state.cart.reduce((sum, item) => sum + priceToNumber(item.price), 0);
+  document.getElementById('cartTotal').textContent = total.toLocaleString('ru-RU') + ' ₽';
+  footer.style.display = 'block';
+  renderIcons();
+}
+function removeFromCart(i){
+  state.cart.splice(i, 1);
+  updateCartBadge();
+  renderCart();
+  saveState();
+}
+function checkoutCart(){
+  state.cart.forEach(item => {
+    state.orders.push({ name: item.name, price: item.price, date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long'}) });
+  });
+  state.cart = [];
+  updateCartBadge();
+  document.getElementById('cartFooter').style.display = 'none';
+  document.getElementById('cartItems').innerHTML = '';
+  document.getElementById('cartConfirm').classList.add('show');
+  saveState();
+}
+function renderOrders(){
+  const el = document.getElementById('ordersList');
+  if(state.orders.length === 0){
+    el.innerHTML = '<div class="empty-state"><i data-icon="package" style="width:32px;height:32px;margin:0 auto 12px;display:block;color:var(--line);"></i>Заказов пока нет.<br>Загляни в «Маркет» — там есть рекомендованные средства.</div>';
+    renderIcons();
+    return;
+  }
+  el.innerHTML = state.orders.map(o =>
+    '<div class="plan-item"><div class="ph" style="background:var(--rose-soft);"><i data-icon="package"></i></div>' +
+    '<div class="tx"><div class="t1">' + o.name + '</div><div class="t2">' + o.date + ' · ' + o.price + '</div></div></div>'
+  ).join('');
+  renderIcons();
+}
+
+/* ===================== FEEDBACK ===================== */
+let feedbackRating = 0;
+document.addEventListener('click', function(e){
+  const star = e.target.closest('#starsRow svg');
+  if(star){
+    feedbackRating = Number(star.dataset.v);
+    document.querySelectorAll('#starsRow svg').forEach(s => s.classList.toggle('on', Number(s.dataset.v) <= feedbackRating));
+  }
+});
+function submitFeedback(){
+  document.getElementById('feedbackForm').style.display = 'none';
+  document.getElementById('feedbackConfirm').classList.add('show');
+}
+
+/* ===================== SETTINGS ===================== */
+function toggleSwitch(id){
+  document.getElementById(id).classList.toggle('on');
+}
+
+/* ===================== VIEWPORT HEIGHT FIX ===================== */
+function setVH(){
+  document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+}
+setVH();
+window.addEventListener('resize', setVH);
+window.addEventListener('orientationchange', setVH);
+
+if (document.readyState !== 'loading') { renderIcons(); }
+document.addEventListener('DOMContentLoaded', async () => {
+  setVH();
+  renderIcons();
+  document.querySelector('.navbar').style.display = 'none';
+
+  const hasProfile = await loadState();
+  if(hasProfile && state.name){
+    applyPersonalization();
+    updateCartBadge();
+    showScreen('home');
+  } else {
+    const first = document.getElementById('screen-onboarding');
+    first.classList.add('entering');
+  }
+});
+</script>
+
+</body>
+</html>
